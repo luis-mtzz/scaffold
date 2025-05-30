@@ -9,7 +9,7 @@ This project is dedicated to providing a modular scaffolding tool for starter te
 │   └── repomix
 │       ├── instructions.md
 │       └── repomix.config.json
-├── mkproject
+├── scaffold
 ├── README.md
 └── templates
     ├── javascript
@@ -43,7 +43,7 @@ This project is dedicated to providing a modular scaffolding tool for starter te
 
 ```bash
 # List available templates
-mkproject list
+scaffold list
 
 # Output
 Available project templates (language/type):
@@ -58,7 +58,7 @@ Available project templates (language/type):
 ```bash
 # To create a new project
 
-mkproject python fastapi testProject
+scaffold python fastapi testProject
 
 # Output
 Creating new project 'testProject' using 'python/fastapi' template...
