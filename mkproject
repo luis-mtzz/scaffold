@@ -1,0 +1,124 @@
+#!/bin/bash
+
+TEMPLATE_DIR="$HOME/bin/templates"
+REPOMIX_DIR="$HOME/bin/assets"
+
+function list_templates_macos_compatible() {
+    find "$TEMPLATE_DIR" -maxdepth 2 -mindepth 2 -type d -print 2>/dev/null | \
+    sed "s|^$TEMPLATE_DIR/|  - |"
+}
+
+function display_help() {
+    echo "Usage: mkproject <language> <template_type> <project_name>"
+    echo "       mkproject list"
+    echo "Available templates:"
+    if ! list_templates_macos_compatible; then
+        echo "  (No templates found in $TEMPLATE_DIR)"
+    fi
+    echo
+    echo "Examples:"
+    echo "  mkproject python fastapi my_app"
+    echo "  mkproject javascript fastify myApp"
+}
+
+if [ ! -d "$TEMPLATE_DIR" ]; then
+    echo "Error: Templates directory '$TEMPLATE_DIR' not found."
+    echo "Please create it and add your project templates."
+    echo " Example: mkdir -p '$TEMPLATE_DIR/python'"
+    exit 1
+fi
+
+if [ ! -d "$REPOMIX_DIR/repomix" ]; then
+    echo "Error: Repomix assets directory '$REPOMIX_DIR' not found."
+    echo "Please run the setup commands for repomix as instructed."
+    exit 1
+fi
+
+if [ "$#" -eq 1 ] && [ "$1" == "list" ]; then
+    echo "Available project templates (language/type):"
+    if ! list_templates_macos_compatible; then
+        echo "  (No templates found)"
+    fi
+    exit 0
+fi
+
+if [ "$#" -ne 3 ]; then
+    display_help
+    exit 1
+fi
+
+LANGUAGE="$1"
+TEMPLATE_TYPE="$2"
+PROJECT_NAME="$3"
+TEMPLATE_PATH="$TEMPLATE_DIR/$LANGUAGE/$TEMPLATE_TYPE"
+DEST_PATH="./$PROJECT_NAME"
+
+if [ ! -d "$TEMPLATE_PATH" ]; then
+    echo "Error: Template for '$LANGUAGE/$TEMPLATE_TYPE' not found."
+    echo "Available templates:"
+    list_templates_macos_compatible
+    exit 1
+fi
+
+if [ -d "$DEST_PATH" ]; then
+    echo "Error: Project directory '$DEST_PATH' already exists. Aborting."
+    exit 1
+fi
+
+echo "Creating new project '$PROJECT_NAME' using '$LANGUAGE/$TEMPLATE_TYPE' template..."
+
+mkdir -p "$DEST_PATH"
+if [ $? -ne 0 ]; then
+    echo "Error: Could not create directory '$DEST_PATH'."
+    exit 1
+fi
+
+cp -R "$TEMPLATE_PATH/." "$DEST_PATH"
+if [ $? -ne 0 ]; then
+    echo "Error: Could not copy template files."
+    rmdir "$DEST_PATH"
+    exit 1
+fi
+
+cp -R "$REPOMIX_DIR/repomix" "$DEST_PATH/"
+if [ $? -ne 0 ]; then
+    echo "Error: Could not copy repomix assets."
+    exit 1
+fi
+
+GITIGNORE_PATH="$DEST_PATH/.gitignore"
+echo "Creating .gitignore..."
+if [ ! -f "$GITIGNORE_PATH" ]; then
+    touch "$GITIGNORE_PATH"
+fi
+
+if ! grep -q "^repomix/$" "$GITIGNORE_PATH"; then
+    echo "repomix/" >> "$GITIGNORE_PATH"
+    echo "  Added 'repomix/' to .gitignore"
+else
+    echo "  'repomix/' already exists in .gitignore."
+fi
+
+sed -i '' "s/name = \"Project-Name\"/name = \"$PROJECT_NAME\"/" "$DEST_PATH/pyproject.toml" 2>/dev/null
+
+(cd "$DEST_PATH" && git init)
+if [ $? -ne 0 ]; then
+    echo "Warning: Could not initialize Git repository."
+fi
+
+SETUP_SCRIPT="$DEST_PATH/setup.sh"
+if [ -f "$SETUP_SCRIPT" ]; then
+    echo "Executing project setup script..."
+    chmod +x "$SETUP_SCRIPT"
+    (cd "$DEST_PATH" && "./setup.sh")
+    if [ $? -ne 0 ]; then
+        echo "Warning: Project setup script failed. Please check '$DEST_PATH/setup.sh' for errors."
+    else
+        echo "Project setup script completed. Removing from project."
+        rm "$SETUP_SCRIPT"
+    fi
+else
+    echo "No 'setup.sh' script found in template. Skipping post-creation setup."
+fi
+
+echo "Created '$PROJECT_NAME' @ '$DEST_PATH'"

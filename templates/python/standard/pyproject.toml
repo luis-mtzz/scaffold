@@ -1,0 +1,56 @@
+# pyproject.toml
+[project]
+name = "Project-Name"
+version = "0.1.0"
+description = "Standard Python Project template."
+authors = [{ name = "Luis M.", email = "luismtzzdev@gmail.com" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "ruff",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "pre-commit",
+    "pip-audit",
+]
+
+[tool.black]
+line-length = 99
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 99
+fix = true
+target-version = "py312"
+select = ["E", "F", "B", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--cov=app --cov-report=term-missing -ra"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]
+
+[build-system]
+requires = ["setuptools>=64.0"]
+build-backend = "setuptools.build_meta"

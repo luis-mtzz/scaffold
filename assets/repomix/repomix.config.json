@@ -1,0 +1,40 @@
+{
+    "$schema": "https://repomix.com/schemas/latest/schema.json",
+    "input": {
+        "maxFileSize": 50000000
+    },
+    "output": {
+        "instructionFilePath": "instructions.md",
+        "filePath": "codebase.md",
+        "style": "markdown",
+        "parsableStyle": false,
+        "compress": false,
+        "headerText": "Codebase",
+        "fileSummary": false,
+        "directoryStructure": true,
+        "files": true,
+        "removeComments": true,
+        "removeEmptyLines": true,
+        "topFilesLength": 5,
+        "showLineNumbers": false,
+        "copyToClipboard": false,
+        "includeEmptyDirectories": true,
+        "git": {
+            "sortByChanges": true,
+            "sortByChangesMaxCommits": 100,
+            "includeDiffs": false
+        }
+    },
+    "include": ["**/*"],
+    "ignore": {
+        "useGitignore": true,
+        "useDefaultPatterns": true,
+        "customPatterns": ["additional-folder", "**/*.log"]
+    },
+    "security": {
+        "enableSecurityCheck": true
+    },
+    "tokenCount": {
+        "encoding": "o200k_base"
+    }
+}

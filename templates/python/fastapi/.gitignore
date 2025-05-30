@@ -1,0 +1,31 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+*.pyo
+*.pyd
+.env
+.venv
+env/
+venv/
+
+# Tools
+.pytest_cache/
+.mypy_cache/
+coverage.*
+htmlcov/
+.cache/
+ruff_cache/
+
+# Editors
+.idea/
+.vscode/
+.DS_Store
+
+# Builds
+dist/
+build/
+*.whl
