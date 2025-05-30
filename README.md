@@ -1,4 +1,4 @@
-# Scaffolder
+# Scaffold
 
 This project is dedicated to providing a modular scaffolding tool for starter templates for common use-cases I run into for Python and JavaScript applications. I have included template configurations, basic starter code, and util scripts for project setup.
 
