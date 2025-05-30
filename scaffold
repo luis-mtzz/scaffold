@@ -9,16 +9,16 @@ function list_templates_macos_compatible() {
 }
 
 function display_help() {
-    echo "Usage: mkproject <language> <template_type> <project_name>"
-    echo "       mkproject list"
+    echo "Usage: scaffold <language> <template_type> <project_name>"
+    echo "       scaffold list"
     echo "Available templates:"
     if ! list_templates_macos_compatible; then
         echo "  (No templates found in $TEMPLATE_DIR)"
     fi
     echo
     echo "Examples:"
-    echo "  mkproject python fastapi my_app"
-    echo "  mkproject javascript fastify myApp"
+    echo "  scaffold python fastapi my_app"
+    echo "  scaffold javascript fastify myApp"
 }
 
 if [ ! -d "$TEMPLATE_DIR" ]; then
