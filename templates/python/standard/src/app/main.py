@@ -1,4 +1,7 @@
 # src/main.py
+from utils.env_utils import load_env
+
+load_env()
 
 def main():
     print("Hello, World!")
